@@ -2,6 +2,7 @@ language: cpp
 os:
     - linux
     - osx
+    - windows
 dist:
     - bionic
 osx_image:
@@ -14,13 +15,12 @@ before_script:
     - pushd opencv
     - mkdir build
     - cd build
-    - cmake .. -DBUILD_LIST=core,imgproc,imgcodecs,calib3d,highgui -DBUILD_EXAMPLES=OFF
-    - make -j8
-    - sudo make -j8 install
+    - cmake .. -DBUILD_LIST=core,imgproc,imgcodecs,calib3d,highgui -DBUILD_EXAMPLES=OFF -DCMAKE_INSTALL_PREFIX=../install
+    - cmake --build . --target install --config Release
     - popd
 script:
     - mkdir -p build
     - cd build
-    - cmake ..
-    - make
+    - cmake .. -DOpenCV_DIR=$(find ../opencv/install -name OpenCVConfig.cmake)
+    - cmake --build .
     - echo | ./demo
